@@ -6,6 +6,7 @@ on:
       - 'develop'
 
 env:
+  GITHUB_RUN_ID: ${GITHUB_RUN_ID}
   RELEASE_REVISION: "pr-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -60,12 +61,12 @@ jobs:
       with:
             context: .
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ github.GITHUB_RUN_ID }}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ env.GITHUB_RUN_ID }}
 
     - name: Deploy to Kubernetes
       uses: kodermax/kubectl-aws-eks@master
       env:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
-            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ github.GITHUB_RUN_ID }} --record -n linkfire
+            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ env.GITHUB_RUN_ID }} --record -n linkfire
             #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
