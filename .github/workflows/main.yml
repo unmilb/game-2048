@@ -80,4 +80,5 @@ jobs:
 
     - name: Redeploy pod
       uses: kodermax/kubectl-aws-eks@master
-      with: rollout restart deployment -n linkfire game-2048
+      with: 
+            args: rollout restart deployment -n linkfire game-2048
