@@ -60,12 +60,12 @@ jobs:
       with:
             context: .
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:$GITHUB_RUN_ID
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ env.GITHUB_RUN_ID }}
 
     - name: Deploy to Kubernetes
       uses: kodermax/kubectl-aws-eks@master
       env:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
-            args: set image deployment/game-2048 game-2048=unmilb/2048:$GITHUB_RUN_ID --record -n linkfire
+            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ env.GITHUB_RUN_ID }} --record -n linkfire
             #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
