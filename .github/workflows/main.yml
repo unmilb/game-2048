@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'develop'
-    tags:
-      - '*'
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
