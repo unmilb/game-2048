@@ -76,7 +76,6 @@ jobs:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
             args: set image deployment/${{ github.event.repository.name }} ${{ github.event.repository.name }}=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.extract_branch.outputs.branch }} --record -n ${{ secrets.KUBE_NAMESPACE }}
-            #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
 
     - name: Redeploy pod
       uses: kodermax/kubectl-aws-eks@master
