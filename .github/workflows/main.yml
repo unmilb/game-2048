@@ -67,4 +67,5 @@ jobs:
       env:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
-            args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
+            args: set image deployment/game-2048 app=unmilb/2048:latest --record -n linkfire
+            #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
