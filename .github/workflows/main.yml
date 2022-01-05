@@ -56,17 +56,22 @@ jobs:
        restore-keys: |
         ${{ runner.os }}-single-buildx
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
     - name: Build & Push
       uses: docker/build-push-action@v2
       with:
             context: .
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ github.head_ref }}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ steps.extract_branch.outputs.branch }}
 
     - name: Deploy to Kubernetes
       uses: kodermax/kubectl-aws-eks@master
       env:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
-            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ github.head_ref }} --record -n linkfire
+            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ steps.extract_branch.outputs.branch }} --record -n linkfire
             #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
