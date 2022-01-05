@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 'develop'
+    tags:
+      - '*'
 
 env:
   GITHUB_RUN_ID: ${GITHUB_RUN_ID}
