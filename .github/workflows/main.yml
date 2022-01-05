@@ -77,3 +77,7 @@ jobs:
       with:
             args: set image deployment/game-2048 game-2048=unmilb/2048:${{ steps.extract_branch.outputs.branch }} --record -n linkfire
             #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
+
+    - name: Redeploy pod
+      uses: kodermax/kubectl-aws-eks@master
+      with: rollout restart deployment -n linkfire game-2048
