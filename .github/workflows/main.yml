@@ -14,7 +14,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ secrets.AWS_REGION }}
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-
+  KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
 jobs:
   release:
     name: Release
@@ -68,17 +68,17 @@ jobs:
       with:
             context: .
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:${{ steps.extract_branch.outputs.branch }}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.extract_branch.outputs.branch }}
 
     - name: Deploy to Kubernetes
       uses: kodermax/kubectl-aws-eks@master
       env:
           RELEASE_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
       with:
-            args: set image deployment/game-2048 game-2048=unmilb/2048:${{ steps.extract_branch.outputs.branch }} --record -n linkfire
+            args: set image deployment/${{ github.event.repository.name }} ${{ github.event.repository.name }}=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.extract_branch.outputs.branch }} --record -n ${{ secrets.KUBE_NAMESPACE }}
             #args: set image deployment/game-2048 app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
 
     - name: Redeploy pod
       uses: kodermax/kubectl-aws-eks@master
       with: 
-            args: rollout restart deployment -n linkfire game-2048
+            args: rollout restart deployment -n ${{ secrets.KUBE_NAMESPACE }} ${{ github.event.repository.name }}
